@@ -70,6 +70,10 @@ jobs:
           cache: true
           channel: stable
 
+      # تم نقل جلب الحزم هنا مبكراً لتجنب أخطاء حزم الـ lints وتحليل الأكواد
+      - name: Get dependencies
+        run: flutter pub get
+
       # المشروع مرفوع بدون مجلد android، فنولّده هنا تلقائيًا (لو مش موجود)
       - name: Generate Android platform files (if missing)
         run: |
@@ -158,9 +162,6 @@ jobs:
           GRADLE_FILE=android/app/build.gradle.kts
           if [ ! -f "$GRADLE_FILE" ]; then GRADLE_FILE=android/app/build.gradle; fi
           python3 android_overlay/patch_build_gradle.py "$GRADLE_FILE"
-
-      - name: Get dependencies
-        run: flutter pub get
 
       # يكشف أخطاء Dart (أنواع، استيرادات، صياغة) في دقيقة بدل اكتشافها بعد
       # بناء Gradle كامل بياخد وقت أطول بكتير. بيفشل بس على أخطاء حقيقية
